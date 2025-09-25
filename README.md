@@ -28,9 +28,14 @@ Explore additional analytics and web solutions at [zrlo.dev](https://zrlo.dev).
 
 ## Screenshots
 
-*Add screenshots or demo gifs here for visual reference.*
+![IMG_0557](https://github.com/user-attachments/assets/f9e8ee67-8847-4bad-8609-1778954118ee)
+![IMG_0555](https://github.com/user-attachments/assets/c6713a27-6e69-4213-aa47-dccb413088fd)
+![IMG_0553](https://github.com/user-attachments/assets/15b59fca-348b-4a75-8604-eed17c51614c)
+![IMG_0551](https://github.com/user-attachments/assets/e8634533-9ab3-49a2-8184-155e5988ef91)
+![IMG_0549](https://github.com/user-attachments/assets/1a3ff948-175a-4f86-bf64-b17b8ada5f72)
+![IMG_0547](https://github.com/user-attachments/assets/0eb932c4-8b58-463e-9dcd-ef8a908848c8)
 
 ## License
 
-MIT License © 2025 Your Name  
+MIT License © 2025 Zachary Ryan (Rothschild) Lopez.   
 See `LICENSE` for details.
