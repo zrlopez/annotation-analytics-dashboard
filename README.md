@@ -24,7 +24,7 @@
 
 ## More Projects
 
-Explore additional analytics and web solutions at [zrlo.dev](https://zrlo.dev).
+Explore additional analytics and web solutions at [zrl.dev](https://zrl.dev).
 
 ## Screenshots
 
