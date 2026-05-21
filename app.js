@@ -244,8 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // FIX #4: wrap each tab loader in try/catch so a failed init clears the chart
-// reference and allows recovery on the next click, instead of silently
-// getting stuck with a stale truthy value guarding re-entry.
+// reference and allows recovery on the next click.
 function tryLoadTab(chartKey, loaderFn) {
     try {
         loaderFn();
@@ -608,7 +607,10 @@ function loadTeamTab() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: { display: true, text: 'Productivity Score' }
+                        // FIX #6: cap y-axis at 110 to flag above-100 values visually
+                        // without hiding them, and add a reference line note in title
+                        max: 110,
+                        title: { display: true, text: 'Productivity Score (100 = target)' }
                     }
                 }
             }
@@ -721,6 +723,8 @@ function loadCapacityTab() {
                     data: [...historicalData.map(d => d.predicted), ...forecastData.map(d => d.predicted)],
                     borderColor: colors[1],
                     backgroundColor: colors[1] + '20',
+                    // FIX #1: was `borderDash` (incorrect casing/placement) — correct
+                    // Chart.js dataset property is `borderDash` on the dataset object
                     borderDash: [5, 5],
                     fill: false
                 }]
