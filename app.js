@@ -243,41 +243,53 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
 
+// FIX #4: wrap each tab loader in try/catch so a failed init clears the chart
+// reference and allows recovery on the next click, instead of silently
+// getting stuck with a stale truthy value guarding re-entry.
+function tryLoadTab(chartKey, loaderFn) {
+    try {
+        loaderFn();
+    } catch (err) {
+        console.error(`Tab load failed for "${chartKey}":`, err);
+        charts[chartKey] = null;
+    }
+}
+
 function initializeApp() {
     initializeTabNavigation();
     updateLastUpdated();
     loadOverviewTab();
-    
+
     document.querySelector('[data-tab="throughput"]').addEventListener('click', () => {
         if (!charts.hourlyThroughput) {
-            setTimeout(loadThroughputTab, 100);
+            setTimeout(() => tryLoadTab('hourlyThroughput', loadThroughputTab), 100);
         }
     });
-    
+
     document.querySelector('[data-tab="errors"]').addEventListener('click', () => {
         if (!charts.errorClassification) {
-            setTimeout(loadErrorsTab, 100);
+            setTimeout(() => tryLoadTab('errorClassification', loadErrorsTab), 100);
         }
     });
-    
+
     document.querySelector('[data-tab="team"]').addEventListener('click', () => {
         if (!charts.teamProductivity) {
-            setTimeout(loadTeamTab, 100);
+            setTimeout(() => tryLoadTab('teamProductivity', loadTeamTab), 100);
         }
     });
-    
+
     document.querySelector('[data-tab="capacity"]').addEventListener('click', () => {
         if (!charts.capacityForecast) {
-            setTimeout(loadCapacityTab, 100);
+            setTimeout(() => tryLoadTab('capacityForecast', loadCapacityTab), 100);
         }
     });
-    
+
     document.querySelector('[data-tab="alerts"]').addEventListener('click', () => {
         if (!charts.alertHistory) {
-            setTimeout(loadAlertsTab, 100);
+            setTimeout(() => tryLoadTab('alertHistory', loadAlertsTab), 100);
         }
     });
-    
+
     startRealTimeUpdates();
 }
 
