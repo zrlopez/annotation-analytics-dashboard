@@ -238,10 +238,25 @@ const colors = ['#1FB8CD', '#FFC185', '#B4413C', '#ECEBD5', '#5D878F', '#DB4545'
 // Global chart instances
 let charts = {};
 
-// Application initialization
-document.addEventListener('DOMContentLoaded', function() {
-    initializeApp();
-});
+// YELLOW #1: destroy an existing chart instance before re-creating it on the
+// same canvas to prevent the "Canvas is already in use" error.
+function destroyChart(key) {
+    if (charts[key]) {
+        charts[key].destroy();
+        charts[key] = null;
+    }
+}
+
+// YELLOW #3: centralised canvas getter — logs a clear error and returns null
+// if the element is missing so every loader fails loudly instead of silently.
+function getCanvas(id) {
+    const el = document.getElementById(id);
+    if (!el) {
+        console.error(`Canvas element not found: #${id}`);
+        return null;
+    }
+    return el;
+}
 
 // FIX #4: wrap each tab loader in try/catch so a failed init clears the chart
 // reference and allows recovery on the next click.
@@ -253,6 +268,10 @@ function tryLoadTab(chartKey, loaderFn) {
         charts[chartKey] = null;
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+});
 
 function initializeApp() {
     initializeTabNavigation();
@@ -292,7 +311,6 @@ function initializeApp() {
     startRealTimeUpdates();
 }
 
-// Tab Navigation
 function initializeTabNavigation() {
     const tabButtons = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -308,7 +326,6 @@ function initializeTabNavigation() {
     });
 }
 
-// Overview Tab
 function loadOverviewTab() {
     document.getElementById('total-throughput').textContent = data.kpis.totalThroughput.toLocaleString();
     document.getElementById('throughput-trend').textContent = data.kpis.throughputChange;
@@ -325,15 +342,16 @@ function loadOverviewTab() {
     createMiniChart('capacity-mini-chart', data.capacityData.historical.slice(-7).map(d => d.actual).filter(v => v !== null));
 }
 
-function createMiniChart(canvasId, data) {
-    const ctx = document.getElementById(canvasId);
+function createMiniChart(canvasId, chartData) {
+    const ctx = getCanvas(canvasId);
     if (!ctx) return;
-    new Chart(ctx.getContext('2d'), {
+    destroyChart(canvasId);
+    charts[canvasId] = new Chart(ctx.getContext('2d'), {
         type: 'line',
         data: {
-            labels: data.map((_, i) => i),
+            labels: chartData.map((_, i) => i),
             datasets: [{
-                data: data,
+                data: chartData,
                 borderColor: colors[0],
                 backgroundColor: colors[0] + '20',
                 borderWidth: 2,
@@ -362,10 +380,10 @@ function createMiniChart(canvasId, data) {
     });
 }
 
-// Throughput Tab
 function loadThroughputTab() {
-    const hourlyCtx = document.getElementById('hourly-throughput-chart');
+    const hourlyCtx = getCanvas('hourly-throughput-chart');
     if (!hourlyCtx) return;
+    destroyChart('hourlyThroughput');
     charts.hourlyThroughput = new Chart(hourlyCtx.getContext('2d'), {
         type: 'line',
         data: {
@@ -392,8 +410,9 @@ function loadThroughputTab() {
         }
     });
 
-    const dailyCtx = document.getElementById('daily-throughput-chart');
+    const dailyCtx = getCanvas('daily-throughput-chart');
     if (!dailyCtx) return;
+    destroyChart('dailyThroughput');
     charts.dailyThroughput = new Chart(dailyCtx.getContext('2d'), {
         type: 'line',
         data: {
@@ -420,8 +439,9 @@ function loadThroughputTab() {
         }
     });
 
-    const processCtx = document.getElementById('process-breakdown-chart');
+    const processCtx = getCanvas('process-breakdown-chart');
     if (!processCtx) return;
+    destroyChart('processBreakdown');
     charts.processBreakdown = new Chart(processCtx.getContext('2d'), {
         type: 'pie',
         data: {
@@ -438,9 +458,9 @@ function loadThroughputTab() {
         }
     });
 
-    const peakCtx = document.getElementById('peak-hours-chart');
+    const peakCtx = getCanvas('peak-hours-chart');
     if (!peakCtx) return;
-    // FIX #3: use .slice() to avoid mutating the original hourly data array
+    destroyChart('peakHours');
     const peakHours = data.throughputData.hourly.slice().sort((a, b) => b.value - a.value).slice(0, 6);
     charts.peakHours = new Chart(peakCtx.getContext('2d'), {
         type: 'bar',
@@ -466,10 +486,10 @@ function loadThroughputTab() {
     });
 }
 
-// Errors Tab
 function loadErrorsTab() {
-    const classificationCtx = document.getElementById('error-classification-chart');
+    const classificationCtx = getCanvas('error-classification-chart');
     if (classificationCtx) {
+        destroyChart('errorClassification');
         charts.errorClassification = new Chart(classificationCtx, {
             type: 'pie',
             data: {
@@ -502,8 +522,9 @@ function loadErrorsTab() {
         });
     }
 
-    const trendCtx = document.getElementById('error-trend-chart');
+    const trendCtx = getCanvas('error-trend-chart');
     if (trendCtx) {
+        destroyChart('errorTrend');
         charts.errorTrend = new Chart(trendCtx, {
             type: 'line',
             data: {
@@ -531,8 +552,9 @@ function loadErrorsTab() {
         });
     }
 
-    const severityCtx = document.getElementById('error-severity-chart');
+    const severityCtx = getCanvas('error-severity-chart');
     if (severityCtx) {
+        destroyChart('errorSeverity');
         charts.errorSeverity = new Chart(severityCtx, {
             type: 'doughnut',
             data: {
@@ -554,8 +576,9 @@ function loadErrorsTab() {
         });
     }
 
-    const resolutionCtx = document.getElementById('resolution-time-chart');
+    const resolutionCtx = getCanvas('resolution-time-chart');
     if (resolutionCtx) {
+        destroyChart('resolutionTime');
         charts.resolutionTime = new Chart(resolutionCtx, {
             type: 'bar',
             data: {
@@ -581,12 +604,12 @@ function loadErrorsTab() {
     }
 }
 
-// Team Tab
 function loadTeamTab() {
     renderTeamMembers();
 
-    const productivityCtx = document.getElementById('team-productivity-chart');
+    const productivityCtx = getCanvas('team-productivity-chart');
     if (productivityCtx) {
+        destroyChart('teamProductivity');
         charts.teamProductivity = new Chart(productivityCtx, {
             type: 'line',
             data: {
@@ -607,8 +630,6 @@ function loadTeamTab() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        // FIX #6: cap y-axis at 110 to flag above-100 values visually
-                        // without hiding them, and add a reference line note in title
                         max: 110,
                         title: { display: true, text: 'Productivity Score (100 = target)' }
                     }
@@ -617,8 +638,9 @@ function loadTeamTab() {
         });
     }
 
-    const completionCtx = document.getElementById('task-completion-chart');
+    const completionCtx = getCanvas('task-completion-chart');
     if (completionCtx) {
+        destroyChart('taskCompletion');
         charts.taskCompletion = new Chart(completionCtx, {
             type: 'bar',
             data: {
@@ -699,10 +721,10 @@ function renderUtilizationHeatmap() {
     }
 }
 
-// Capacity Tab
 function loadCapacityTab() {
-    const forecastCtx = document.getElementById('capacity-forecast-chart');
+    const forecastCtx = getCanvas('capacity-forecast-chart');
     if (forecastCtx) {
+        destroyChart('capacityForecast');
         const historicalData = data.capacityData.historical;
         const forecastData = data.capacityData.forecast;
         charts.capacityForecast = new Chart(forecastCtx, {
@@ -723,8 +745,6 @@ function loadCapacityTab() {
                     data: [...historicalData.map(d => d.predicted), ...forecastData.map(d => d.predicted)],
                     borderColor: colors[1],
                     backgroundColor: colors[1] + '20',
-                    // FIX #1: was `borderDash` (incorrect casing/placement) — correct
-                    // Chart.js dataset property is `borderDash` on the dataset object
                     borderDash: [5, 5],
                     fill: false
                 }]
@@ -742,8 +762,9 @@ function loadCapacityTab() {
         });
     }
 
-    const growthCtx = document.getElementById('growth-projection-chart');
+    const growthCtx = getCanvas('growth-projection-chart');
     if (growthCtx) {
+        destroyChart('growthProjection');
         charts.growthProjection = new Chart(growthCtx, {
             type: 'line',
             data: {
@@ -805,13 +826,13 @@ function renderRecommendations() {
     }
 }
 
-// Alerts Tab
 function loadAlertsTab() {
     renderActiveAlerts();
     renderThresholds();
 
-    const historyCtx = document.getElementById('alert-history-chart');
+    const historyCtx = getCanvas('alert-history-chart');
     if (historyCtx) {
+        destroyChart('alertHistory');
         charts.alertHistory = new Chart(historyCtx, {
             type: 'bar',
             data: {
@@ -876,7 +897,6 @@ function renderThresholds() {
     }
 }
 
-// Real-time updates
 const BASE_THROUGHPUT = 15420;
 const BASE_ERROR_RATE = 2.3;
 const BASE_EFFICIENCY = 87.5;
@@ -898,7 +918,6 @@ function updateLastUpdated() {
 }
 
 function simulateDataUpdate() {
-    // FIX #5: oscillate around base values instead of compounding drift
     const variation = (Math.random() - 0.5) * 0.05;
 
     data.kpis.totalThroughput = Math.max(0, Math.round(BASE_THROUGHPUT * (1 + variation)));
