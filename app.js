@@ -248,7 +248,6 @@ function initializeApp() {
     updateLastUpdated();
     loadOverviewTab();
     
-    // Initialize other tabs when first accessed
     document.querySelector('[data-tab="throughput"]').addEventListener('click', () => {
         if (!charts.hourlyThroughput) {
             setTimeout(loadThroughputTab, 100);
@@ -279,7 +278,6 @@ function initializeApp() {
         }
     });
     
-    // Start real-time updates
     startRealTimeUpdates();
 }
 
@@ -291,11 +289,8 @@ function initializeTabNavigation() {
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             const tabId = button.dataset.tab;
-            
-            // Update active states
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
-            
             button.classList.add('active');
             document.getElementById(tabId).classList.add('active');
         });
@@ -304,7 +299,6 @@ function initializeTabNavigation() {
 
 // Overview Tab
 function loadOverviewTab() {
-    // Update KPI values
     document.getElementById('total-throughput').textContent = data.kpis.totalThroughput.toLocaleString();
     document.getElementById('throughput-trend').textContent = data.kpis.throughputChange;
     document.getElementById('error-rate').textContent = data.kpis.errorRate + '%';
@@ -314,19 +308,19 @@ function loadOverviewTab() {
     document.getElementById('capacity-utilization').textContent = data.kpis.capacityUtilization + '%';
     document.getElementById('capacity-trend').textContent = data.kpis.capacityUtilizationChange;
 
-    // Create mini charts
     createMiniChart('throughput-mini-chart', data.throughputData.daily.slice(-7).map(d => d.value));
     createMiniChart('error-mini-chart', data.errorData.trends.slice(-7).map(d => d.value));
     createMiniChart('efficiency-mini-chart', data.teamData.productivity.slice(-7).map(d => d.value));
-    createMiniChart('capacity-mini-chart', data.capacityData.historical.slice(-7).map(d => d.actual));
+    createMiniChart('capacity-mini-chart', data.capacityData.historical.slice(-7).map(d => d.actual).filter(v => v !== null));
 }
 
 function createMiniChart(canvasId, data) {
-    const ctx = document.getElementById(canvasId).getContext('2d');
-    new Chart(ctx, {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return;
+    new Chart(ctx.getContext('2d'), {
         type: 'line',
         data: {
-            labels: ['', '', '', '', '', '', ''],
+            labels: data.map((_, i) => i),
             datasets: [{
                 data: data,
                 borderColor: colors[0],
@@ -359,9 +353,9 @@ function createMiniChart(canvasId, data) {
 
 // Throughput Tab
 function loadThroughputTab() {
-    // Hourly throughput chart
-    const hourlyCtx = document.getElementById('hourly-throughput-chart').getContext('2d');
-    charts.hourlyThroughput = new Chart(hourlyCtx, {
+    const hourlyCtx = document.getElementById('hourly-throughput-chart');
+    if (!hourlyCtx) return;
+    charts.hourlyThroughput = new Chart(hourlyCtx.getContext('2d'), {
         type: 'line',
         data: {
             labels: data.throughputData.hourly.map(d => d.time),
@@ -377,24 +371,19 @@ function loadThroughputTab() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
+            plugins: { legend: { display: false } },
             scales: {
                 y: {
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Requests per Hour'
-                    }
+                    title: { display: true, text: 'Requests per Hour' }
                 }
             }
         }
     });
 
-    // Daily throughput chart
-    const dailyCtx = document.getElementById('daily-throughput-chart').getContext('2d');
-    charts.dailyThroughput = new Chart(dailyCtx, {
+    const dailyCtx = document.getElementById('daily-throughput-chart');
+    if (!dailyCtx) return;
+    charts.dailyThroughput = new Chart(dailyCtx.getContext('2d'), {
         type: 'line',
         data: {
             labels: data.throughputData.daily.map(d => new Date(d.date).toLocaleDateString()),
@@ -410,24 +399,19 @@ function loadThroughputTab() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
+            plugins: { legend: { display: false } },
             scales: {
                 y: {
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Daily Requests'
-                    }
+                    title: { display: true, text: 'Daily Requests' }
                 }
             }
         }
     });
 
-    // Process breakdown pie chart
-    const processCtx = document.getElementById('process-breakdown-chart').getContext('2d');
-    charts.processBreakdown = new Chart(processCtx, {
+    const processCtx = document.getElementById('process-breakdown-chart');
+    if (!processCtx) return;
+    charts.processBreakdown = new Chart(processCtx.getContext('2d'), {
         type: 'pie',
         data: {
             labels: data.throughputData.byProcess.map(d => d.process),
@@ -439,18 +423,15 @@ function loadThroughputTab() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
+            plugins: { legend: { position: 'bottom' } }
         }
     });
 
-    // Peak hours bar chart
-    const peakCtx = document.getElementById('peak-hours-chart').getContext('2d');
-    const peakHours = data.throughputData.hourly.sort((a, b) => b.value - a.value).slice(0, 6);
-    charts.peakHours = new Chart(peakCtx, {
+    const peakCtx = document.getElementById('peak-hours-chart');
+    if (!peakCtx) return;
+    // FIX #3: use .slice() to avoid mutating the original hourly data array
+    const peakHours = data.throughputData.hourly.slice().sort((a, b) => b.value - a.value).slice(0, 6);
+    charts.peakHours = new Chart(peakCtx.getContext('2d'), {
         type: 'bar',
         data: {
             labels: peakHours.map(d => d.time),
@@ -463,16 +444,11 @@ function loadThroughputTab() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { display: false }
-            },
+            plugins: { legend: { display: false } },
             scales: {
                 y: {
                     beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Requests per Hour'
-                    }
+                    title: { display: true, text: 'Requests per Hour' }
                 }
             }
         }
@@ -481,7 +457,6 @@ function loadThroughputTab() {
 
 // Errors Tab
 function loadErrorsTab() {
-    // Error classification pie chart - fixed implementation
     const classificationCtx = document.getElementById('error-classification-chart');
     if (classificationCtx) {
         charts.errorClassification = new Chart(classificationCtx, {
@@ -499,13 +474,7 @@ function loadErrorsTab() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true
-                        }
-                    },
+                    legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
@@ -522,7 +491,6 @@ function loadErrorsTab() {
         });
     }
 
-    // Error trend chart
     const trendCtx = document.getElementById('error-trend-chart');
     if (trendCtx) {
         charts.errorTrend = new Chart(trendCtx, {
@@ -541,23 +509,17 @@ function loadErrorsTab() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Number of Errors'
-                        }
+                        title: { display: true, text: 'Number of Errors' }
                     }
                 }
             }
         });
     }
 
-    // Error severity doughnut chart
     const severityCtx = document.getElementById('error-severity-chart');
     if (severityCtx) {
         charts.errorSeverity = new Chart(severityCtx, {
@@ -575,19 +537,12 @@ function loadErrorsTab() {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true
-                        }
-                    }
+                    legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }
                 }
             }
         });
     }
 
-    // Resolution time chart
     const resolutionCtx = document.getElementById('resolution-time-chart');
     if (resolutionCtx) {
         charts.resolutionTime = new Chart(resolutionCtx, {
@@ -603,16 +558,11 @@ function loadErrorsTab() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Hours'
-                        }
+                        title: { display: true, text: 'Hours' }
                     }
                 }
             }
@@ -622,10 +572,8 @@ function loadErrorsTab() {
 
 // Team Tab
 function loadTeamTab() {
-    // Render team member cards
     renderTeamMembers();
 
-    // Team productivity chart
     const productivityCtx = document.getElementById('team-productivity-chart');
     if (productivityCtx) {
         charts.teamProductivity = new Chart(productivityCtx, {
@@ -644,23 +592,17 @@ function loadTeamTab() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Productivity Score'
-                        }
+                        title: { display: true, text: 'Productivity Score' }
                     }
                 }
             }
         });
     }
 
-    // Task completion chart
     const completionCtx = document.getElementById('task-completion-chart');
     if (completionCtx) {
         charts.taskCompletion = new Chart(completionCtx, {
@@ -677,23 +619,17 @@ function loadTeamTab() {
                 responsive: true,
                 maintainAspectRatio: false,
                 indexAxis: 'y',
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
                     x: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Tasks Completed'
-                        }
+                        title: { display: true, text: 'Tasks Completed' }
                     }
                 }
             }
         });
     }
 
-    // Render utilization heatmap
     renderUtilizationHeatmap();
 }
 
@@ -727,14 +663,12 @@ function renderUtilizationHeatmap() {
     const container = document.getElementById('utilization-heatmap');
     if (container) {
         const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
-        
         let html = `
             <div class="heatmap-header">
                 <div class="heatmap-header-cell">Team Member</div>
                 ${days.map(day => `<div class="heatmap-header-cell">${day}</div>`).join('')}
             </div>
         `;
-        
         html += data.teamData.utilization.map(member => {
             const values = [member.mon, member.tue, member.wed, member.thu, member.fri];
             return `
@@ -747,24 +681,23 @@ function renderUtilizationHeatmap() {
                 </div>
             `;
         }).join('');
-        
         container.innerHTML = html;
     }
 }
 
 // Capacity Tab
 function loadCapacityTab() {
-    // Capacity forecast chart
     const forecastCtx = document.getElementById('capacity-forecast-chart');
     if (forecastCtx) {
         const historicalData = data.capacityData.historical;
         const forecastData = data.capacityData.forecast;
-        
         charts.capacityForecast = new Chart(forecastCtx, {
             type: 'line',
             data: {
-                labels: [...historicalData.map(d => new Date(d.date).toLocaleDateString()), 
-                        ...forecastData.map(d => new Date(d.date).toLocaleDateString())],
+                labels: [
+                    ...historicalData.map(d => new Date(d.date).toLocaleDateString()),
+                    ...forecastData.map(d => new Date(d.date).toLocaleDateString())
+                ],
                 datasets: [{
                     label: 'Actual',
                     data: [...historicalData.map(d => d.actual), ...new Array(forecastData.length).fill(null)],
@@ -786,17 +719,13 @@ function loadCapacityTab() {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Capacity Utilization (%)'
-                        }
+                        title: { display: true, text: 'Capacity Utilization (%)' }
                     }
                 }
             }
         });
     }
 
-    // Growth projection chart
     const growthCtx = document.getElementById('growth-projection-chart');
     if (growthCtx) {
         charts.growthProjection = new Chart(growthCtx, {
@@ -815,23 +744,17 @@ function loadCapacityTab() {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                plugins: { legend: { display: false } },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Throughput'
-                        }
+                        title: { display: true, text: 'Throughput' }
                     }
                 }
             }
         });
     }
 
-    // Render bottlenecks and recommendations
     renderBottlenecks();
     renderRecommendations();
 }
@@ -870,8 +793,7 @@ function renderRecommendations() {
 function loadAlertsTab() {
     renderActiveAlerts();
     renderThresholds();
-    
-    // Alert history chart
+
     const historyCtx = document.getElementById('alert-history-chart');
     if (historyCtx) {
         charts.alertHistory = new Chart(historyCtx, {
@@ -897,13 +819,10 @@ function loadAlertsTab() {
                 maintainAspectRatio: false,
                 scales: {
                     x: { stacked: true },
-                    y: { 
+                    y: {
                         stacked: true,
                         beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Number of Alerts'
-                        }
+                        title: { display: true, text: 'Number of Alerts' }
                     }
                 }
             }
@@ -942,6 +861,11 @@ function renderThresholds() {
 }
 
 // Real-time updates
+const BASE_THROUGHPUT = 15420;
+const BASE_ERROR_RATE = 2.3;
+const BASE_EFFICIENCY = 87.5;
+const BASE_CAPACITY = 73.2;
+
 function startRealTimeUpdates() {
     setInterval(() => {
         updateLastUpdated();
@@ -958,23 +882,21 @@ function updateLastUpdated() {
 }
 
 function simulateDataUpdate() {
-    // Simulate small changes to data
-    const variation = (Math.random() - 0.5) * 0.1;
-    
-    // Update KPI values slightly
-    data.kpis.totalThroughput = Math.max(0, Math.round(data.kpis.totalThroughput * (1 + variation)));
-    data.kpis.errorRate = Math.max(0, parseFloat((data.kpis.errorRate * (1 + variation)).toFixed(1)));
-    data.kpis.teamEfficiency = Math.max(0, Math.min(100, parseFloat((data.kpis.teamEfficiency * (1 + variation)).toFixed(1))));
-    data.kpis.capacityUtilization = Math.max(0, Math.min(100, parseFloat((data.kpis.capacityUtilization * (1 + variation)).toFixed(1))));
-    
-    // Update overview display if on overview tab
+    // FIX #5: oscillate around base values instead of compounding drift
+    const variation = (Math.random() - 0.5) * 0.05;
+
+    data.kpis.totalThroughput = Math.max(0, Math.round(BASE_THROUGHPUT * (1 + variation)));
+    data.kpis.errorRate = Math.max(0, parseFloat((BASE_ERROR_RATE * (1 + variation)).toFixed(1)));
+    data.kpis.teamEfficiency = Math.max(0, Math.min(100, parseFloat((BASE_EFFICIENCY * (1 + variation)).toFixed(1))));
+    data.kpis.capacityUtilization = Math.max(0, Math.min(100, parseFloat((BASE_CAPACITY * (1 + variation)).toFixed(1))));
+
     const activeTab = document.querySelector('.tab-content.active');
     if (activeTab && activeTab.id === 'overview') {
         const throughputEl = document.getElementById('total-throughput');
         const errorEl = document.getElementById('error-rate');
         const efficiencyEl = document.getElementById('team-efficiency');
         const capacityEl = document.getElementById('capacity-utilization');
-        
+
         if (throughputEl) throughputEl.textContent = data.kpis.totalThroughput.toLocaleString();
         if (errorEl) errorEl.textContent = data.kpis.errorRate + '%';
         if (efficiencyEl) efficiencyEl.textContent = data.kpis.teamEfficiency + '%';
