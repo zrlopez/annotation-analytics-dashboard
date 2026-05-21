@@ -16,6 +16,21 @@
 - **Frontend:** HTML, CSS (custom), JavaScript (Chart.js)
 - **Architecture:** Single-page app, modular components, simulated real-time data flows
 
+## Stability & Code Quality
+
+This project underwent a full bug audit and patch pass. Key improvements include:
+
+- **Safe chart initialization** — All Chart.js instances are destroyed before re-creation, preventing "Canvas is already in use" errors on re-renders
+- **Resilient tab loading** — Tab chart loaders are wrapped in `try/catch`; a failed init clears the reference so the next click recovers cleanly
+- **Anchored real-time updates** — Live KPI updates oscillate around fixed base values instead of compounding, preventing unbounded drift
+- **Immutable source data** — Sort operations use `.slice()` to avoid mutating the original data arrays
+- **Null-safe mini charts** — The capacity mini chart filters out `null` actuals before rendering
+- **Visible canvas errors** — A centralized `getCanvas()` helper logs a clear `console.error` for any missing DOM element instead of failing silently
+- **Calibrated productivity axis** — Team productivity y-axis is capped at 110 with a labeled target of 100, making above-target values contextually clear
+- **Correct dashed forecast line** — `borderDash` is properly applied to the predicted dataset in the capacity forecast chart
+
+See [CHANGELOG.md](./CHANGELOG.md) for the full patch history.
+
 ## Usage
 
 1. Clone or download the repository.
