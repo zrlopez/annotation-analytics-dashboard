@@ -210,7 +210,7 @@ function initializeApp() {
     initializeTabNavigation();
     initThemeToggle();
     updateLastUpdated();
-    loadOverviewTab();
+    tryLoadTab('overviewTab', loadOverviewTab);
 
     const exportBtn = document.getElementById('export-csv-btn');
     if (exportBtn) exportBtn.addEventListener('click', exportThroughputCSV);
@@ -625,4 +625,9 @@ function simulateDataUpdate() {
         applyTrendColor('efficiency-trend', data.kpis.teamEfficiencyChange);
         applyTrendColor('capacity-trend', data.kpis.capacityUtilizationChange);
     }
+    // Sync alert threshold current values to live KPIs
+    data.alertsData.thresholds.forEach(t => {
+        if (t.metric === 'Error Rate')           { t.current = data.kpis.errorRate;           t.status = data.kpis.errorRate           >= t.threshold ? 'warning' : 'ok'; }
+        if (t.metric === 'Capacity Utilization') { t.current = data.kpis.capacityUtilization; t.status = data.kpis.capacityUtilization >= t.threshold ? 'warning' : 'ok'; }
+    });
 }
