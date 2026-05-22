@@ -44,7 +44,7 @@ Explore additional analytics and web solutions at [zrl.dev](https://zrl.dev).
 ## Screenshots
 
 <details>
-<summary>View screenshots (6)</summary>
+<summary>📸 <strong>View screenshots (6)</strong></summary>
 
 <br>
 
