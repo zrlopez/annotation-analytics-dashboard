@@ -252,6 +252,13 @@ function initializeTabNavigation() {
     });
 }
 
+function applyTrendColor(elementId, changeValue) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    el.classList.remove('trend-positive', 'trend-negative');
+    el.classList.add(changeValue && changeValue.startsWith('-') ? 'trend-negative' : 'trend-positive');
+}
+
 function loadOverviewTab() {
     document.getElementById('total-throughput').textContent = data.kpis.totalThroughput.toLocaleString();
     document.getElementById('throughput-trend').textContent = data.kpis.throughputChange;
@@ -261,6 +268,10 @@ function loadOverviewTab() {
     document.getElementById('efficiency-trend').textContent = data.kpis.teamEfficiencyChange;
     document.getElementById('capacity-utilization').textContent = data.kpis.capacityUtilization + '%';
     document.getElementById('capacity-trend').textContent = data.kpis.capacityUtilizationChange;
+    applyTrendColor('throughput-trend', data.kpis.throughputChange);
+    applyTrendColor('error-trend', data.kpis.errorRateChange);
+    applyTrendColor('efficiency-trend', data.kpis.teamEfficiencyChange);
+    applyTrendColor('capacity-trend', data.kpis.capacityUtilizationChange);
 
     createMiniChart('throughput-mini-chart', data.throughputData.daily.slice(-7).map(d => d.value));
     createMiniChart('error-mini-chart', data.errorData.trends.slice(-7).map(d => d.value));
@@ -589,5 +600,9 @@ function simulateDataUpdate() {
         if (e) e.textContent = data.kpis.errorRate + '%';
         if (f) f.textContent = data.kpis.teamEfficiency + '%';
         if (c) c.textContent = data.kpis.capacityUtilization + '%';
+        applyTrendColor('throughput-trend', data.kpis.throughputChange);
+        applyTrendColor('error-trend', data.kpis.errorRateChange);
+        applyTrendColor('efficiency-trend', data.kpis.teamEfficiencyChange);
+        applyTrendColor('capacity-trend', data.kpis.capacityUtilizationChange);
     }
 }
