@@ -586,24 +586,44 @@ function updateLastUpdated() {
 }
 
 function simulateDataUpdate() {
-    const variation = (Math.random() - 0.5) * 0.05;
-    data.kpis.totalThroughput     = Math.max(0, Math.round(BASE_THROUGHPUT * (1 + variation)));
-    data.kpis.errorRate           = Math.max(0, parseFloat((BASE_ERROR_RATE * (1 + variation)).toFixed(1)));
-    data.kpis.teamEfficiency      = Math.max(0, Math.min(100, parseFloat((BASE_EFFICIENCY * (1 + variation)).toFixed(1))));
-    data.kpis.capacityUtilization = Math.max(0, Math.min(100, parseFloat((BASE_CAPACITY   * (1 + variation)).toFixed(1))));
+    const v1 = (Math.random() - 0.5) * 0.05;
+    const v2 = (Math.random() - 0.5) * 0.05;
+    const v3 = (Math.random() - 0.5) * 0.05;
+    const v4 = (Math.random() - 0.5) * 0.05;
+    const prevThroughput = data.kpis.totalThroughput;
+    const prevErrorRate  = data.kpis.errorRate;
+    const prevEfficiency = data.kpis.teamEfficiency;
+    const prevCapacity   = data.kpis.capacityUtilization;
+    data.kpis.totalThroughput     = Math.max(0, Math.round(BASE_THROUGHPUT * (1 + v1)));
+    data.kpis.errorRate           = Math.max(0, parseFloat((BASE_ERROR_RATE * (1 + v2)).toFixed(2)));
+    data.kpis.teamEfficiency      = Math.max(0, Math.min(100, parseFloat((BASE_EFFICIENCY * (1 + v3)).toFixed(1))));
+    data.kpis.capacityUtilization = Math.max(0, Math.min(100, parseFloat((BASE_CAPACITY   * (1 + v4)).toFixed(1))));
+    const fmt = (curr, prev) => { const d = ((curr - prev) / (prev || 1)) * 100; return (d >= 0 ? '+' : '') + d.toFixed(1) + '%'; };
+    data.kpis.throughputChange          = fmt(data.kpis.totalThroughput,      prevThroughput);
+    data.kpis.errorRateChange           = fmt(data.kpis.errorRate,            prevErrorRate);
+    data.kpis.teamEfficiencyChange      = fmt(data.kpis.teamEfficiency,       prevEfficiency);
+    data.kpis.capacityUtilizationChange = fmt(data.kpis.capacityUtilization,  prevCapacity);
 
     const activeTab = document.querySelector('.tab-content.active');
     if (activeTab && activeTab.id === 'overview') {
         const t = document.getElementById('total-throughput');
         const e = document.getElementById('error-rate');
-        const f = document.getElementById('team-efficiency');
-        const c = document.getElementById('capacity-utilization');
-        if (t) t.textContent = data.kpis.totalThroughput.toLocaleString();
-        if (e) e.textContent = data.kpis.errorRate + '%';
-        if (f) f.textContent = data.kpis.teamEfficiency + '%';
-        if (c) c.textContent = data.kpis.capacityUtilization + '%';
+        const ef = document.getElementById('team-efficiency');
+        const cp = document.getElementById('capacity-utilization');
+        if (t)  t.textContent  = data.kpis.totalThroughput.toLocaleString();
+        if (e)  e.textContent  = data.kpis.errorRate + '%';
+        if (ef) ef.textContent = data.kpis.teamEfficiency + '%';
+        if (cp) cp.textContent = data.kpis.capacityUtilization + '%';
+        const tt = document.getElementById('throughput-trend');
+        const et = document.getElementById('error-trend');
+        const ft = document.getElementById('efficiency-trend');
+        const ct = document.getElementById('capacity-trend');
+        if (tt) tt.textContent = data.kpis.throughputChange;
+        if (et) et.textContent = data.kpis.errorRateChange;
+        if (ft) ft.textContent = data.kpis.teamEfficiencyChange;
+        if (ct) ct.textContent = data.kpis.capacityUtilizationChange;
         applyTrendColor('throughput-trend', data.kpis.throughputChange);
-        applyTrendColor('error-trend', data.kpis.errorRateChange);
+        applyTrendColor('error-trend', data.kpis.errorRateChange, true);
         applyTrendColor('efficiency-trend', data.kpis.teamEfficiencyChange);
         applyTrendColor('capacity-trend', data.kpis.capacityUtilizationChange);
     }
