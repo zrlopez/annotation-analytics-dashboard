@@ -215,20 +215,18 @@ function initializeApp() {
     const exportBtn = document.getElementById('export-csv-btn');
     if (exportBtn) exportBtn.addEventListener('click', exportThroughputCSV);
 
-    document.querySelector('[data-tab="throughput"]').addEventListener('click', () => {
-        if (!charts.hourlyThroughput) setTimeout(() => tryLoadTab('hourlyThroughput', loadThroughputTab), 100);
-    });
-    document.querySelector('[data-tab="errors"]').addEventListener('click', () => {
-        if (!charts.errorClassification) setTimeout(() => tryLoadTab('errorClassification', loadErrorsTab), 100);
-    });
-    document.querySelector('[data-tab="team"]').addEventListener('click', () => {
-        if (!charts.teamProductivity) setTimeout(() => tryLoadTab('teamProductivity', loadTeamTab), 100);
-    });
-    document.querySelector('[data-tab="capacity"]').addEventListener('click', () => {
-        if (!charts.capacityForecast) setTimeout(() => tryLoadTab('capacityForecast', loadCapacityTab), 100);
-    });
-    document.querySelector('[data-tab="alerts"]').addEventListener('click', () => {
-        if (!charts.alertHistory) setTimeout(() => tryLoadTab('alertHistory', loadAlertsTab), 100);
+    const tabListeners = [
+        { tab: 'throughput', key: 'hourlyThroughput',    loader: loadThroughputTab },
+        { tab: 'errors',     key: 'errorClassification', loader: loadErrorsTab },
+        { tab: 'team',       key: 'teamProductivity',    loader: loadTeamTab },
+        { tab: 'capacity',   key: 'capacityForecast',    loader: loadCapacityTab },
+        { tab: 'alerts',     key: 'alertHistory',        loader: loadAlertsTab },
+    ];
+    tabListeners.forEach(({ tab, key, loader }) => {
+        const btn = document.querySelector(`[data-tab="${tab}"]`);
+        if (btn) btn.addEventListener('click', () => {
+            if (!charts[key]) setTimeout(() => tryLoadTab(key, loader), 100);
+        });
     });
 
     startRealTimeUpdates();

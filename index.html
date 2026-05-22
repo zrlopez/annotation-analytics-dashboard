@@ -28,12 +28,12 @@
 
                 <!-- Navigation Tabs -->
                 <nav class="tab-navigation" role="tablist" aria-label="Dashboard sections">
-                    <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" aria-controls="overview">Overview</button>
-                    <button class="tab-btn" data-tab="throughput" role="tab" aria-selected="false" aria-controls="throughput">Throughput</button>
-                    <button class="tab-btn" data-tab="errors" role="tab" aria-selected="false" aria-controls="errors">Errors</button>
-                    <button class="tab-btn" data-tab="team" role="tab" aria-selected="false" aria-controls="team">Team Metrics</button>
-                    <button class="tab-btn" data-tab="capacity" role="tab" aria-selected="false" aria-controls="capacity">Capacity Planning</button>
-                    <button class="tab-btn" data-tab="alerts" role="tab" aria-selected="false" aria-controls="alerts">Alerts</button>
+                    <button id="tab-overview" class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" aria-controls="overview">Overview</button>
+                    <button id="tab-throughput" class="tab-btn" data-tab="throughput" role="tab" aria-selected="false" aria-controls="throughput">Throughput</button>
+                    <button id="tab-errors" class="tab-btn" data-tab="errors" role="tab" aria-selected="false" aria-controls="errors">Errors</button>
+                    <button id="tab-team" class="tab-btn" data-tab="team" role="tab" aria-selected="false" aria-controls="team">Team Metrics</button>
+                    <button id="tab-capacity" class="tab-btn" data-tab="capacity" role="tab" aria-selected="false" aria-controls="capacity">Capacity Planning</button>
+                    <button id="tab-alerts" class="tab-btn" data-tab="alerts" role="tab" aria-selected="false" aria-controls="alerts">Alerts</button>
                 </nav>
             </div>
         </header>
@@ -47,7 +47,7 @@
                         <div class="kpi-card">
                             <div class="kpi-header">
                                 <h3>Total Throughput</h3>
-                                <span class="kpi-trend positive" id="throughput-trend">+8.5%</span>
+                                <span class="kpi-trend" id="throughput-trend">+8.5%</span>
                             </div>
                             <div class="kpi-value" id="total-throughput">15,420</div>
                             <div class="kpi-chart-container">
@@ -58,7 +58,7 @@
                         <div class="kpi-card">
                             <div class="kpi-header">
                                 <h3>Error Rate</h3>
-                                <span class="kpi-trend negative" id="error-trend">-15.2%</span>
+                                <span class="kpi-trend" id="error-trend">-15.2%</span>
                             </div>
                             <div class="kpi-value" id="error-rate">2.3%</div>
                             <div class="kpi-chart-container">
@@ -69,7 +69,7 @@
                         <div class="kpi-card">
                             <div class="kpi-header">
                                 <h3>Team Efficiency</h3>
-                                <span class="kpi-trend positive" id="efficiency-trend">+5.1%</span>
+                                <span class="kpi-trend" id="efficiency-trend">+5.1%</span>
                             </div>
                             <div class="kpi-value" id="team-efficiency">87.5%</div>
                             <div class="kpi-chart-container">
@@ -80,7 +80,7 @@
                         <div class="kpi-card">
                             <div class="kpi-header">
                                 <h3>Capacity Utilization</h3>
-                                <span class="kpi-trend positive" id="capacity-trend">+2.8%</span>
+                                <span class="kpi-trend" id="capacity-trend">+2.8%</span>
                             </div>
                             <div class="kpi-value" id="capacity-utilization">73.2%</div>
                             <div class="kpi-chart-container">
