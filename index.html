@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-color-scheme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,17 +22,18 @@
                         <div class="last-updated">
                             Last updated: <span id="last-updated">--</span>
                         </div>
+                        <button class="btn btn--sm btn--outline" id="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
                     </div>
                 </div>
-                
+
                 <!-- Navigation Tabs -->
-                <nav class="tab-navigation">
-                    <button class="tab-btn active" data-tab="overview">Overview</button>
-                    <button class="tab-btn" data-tab="throughput">Throughput</button>
-                    <button class="tab-btn" data-tab="errors">Errors</button>
-                    <button class="tab-btn" data-tab="team">Team Metrics</button>
-                    <button class="tab-btn" data-tab="capacity">Capacity Planning</button>
-                    <button class="tab-btn" data-tab="alerts">Alerts</button>
+                <nav class="tab-navigation" role="tablist" aria-label="Dashboard sections">
+                    <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" aria-controls="overview">Overview</button>
+                    <button class="tab-btn" data-tab="throughput" role="tab" aria-selected="false" aria-controls="throughput">Throughput</button>
+                    <button class="tab-btn" data-tab="errors" role="tab" aria-selected="false" aria-controls="errors">Errors</button>
+                    <button class="tab-btn" data-tab="team" role="tab" aria-selected="false" aria-controls="team">Team Metrics</button>
+                    <button class="tab-btn" data-tab="capacity" role="tab" aria-selected="false" aria-controls="capacity">Capacity Planning</button>
+                    <button class="tab-btn" data-tab="alerts" role="tab" aria-selected="false" aria-controls="alerts">Alerts</button>
                 </nav>
             </div>
         </header>
@@ -41,7 +42,7 @@
         <main class="dashboard-main">
             <div class="container">
                 <!-- Overview Tab -->
-                <div id="overview" class="tab-content active">
+                <div id="overview" class="tab-content active" role="tabpanel" aria-labelledby="tab-overview">
                     <div class="kpi-grid">
                         <div class="kpi-card">
                             <div class="kpi-header">
@@ -53,7 +54,7 @@
                                 <canvas id="throughput-mini-chart"></canvas>
                             </div>
                         </div>
-                        
+
                         <div class="kpi-card">
                             <div class="kpi-header">
                                 <h3>Error Rate</h3>
@@ -64,7 +65,7 @@
                                 <canvas id="error-mini-chart"></canvas>
                             </div>
                         </div>
-                        
+
                         <div class="kpi-card">
                             <div class="kpi-header">
                                 <h3>Team Efficiency</h3>
@@ -75,7 +76,7 @@
                                 <canvas id="efficiency-mini-chart"></canvas>
                             </div>
                         </div>
-                        
+
                         <div class="kpi-card">
                             <div class="kpi-header">
                                 <h3>Capacity Utilization</h3>
@@ -118,7 +119,7 @@
                             <div class="card__body">
                                 <div class="quick-actions">
                                     <button class="btn btn--sm btn--outline">Generate Report</button>
-                                    <button class="btn btn--sm btn--outline">Export Data</button>
+                                    <button class="btn btn--sm btn--outline" id="export-csv-btn">Export CSV</button>
                                     <button class="btn btn--sm btn--primary">Configure Alerts</button>
                                 </div>
                             </div>
@@ -127,7 +128,7 @@
                 </div>
 
                 <!-- Throughput Tab -->
-                <div id="throughput" class="tab-content">
+                <div id="throughput" class="tab-content" role="tabpanel" aria-labelledby="tab-throughput">
                     <div class="controls-bar">
                         <select class="form-control" id="throughput-period">
                             <option value="24h">Last 24 Hours</option>
@@ -139,42 +140,31 @@
 
                     <div class="chart-grid">
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Hourly Throughput (Last 24H)</h3>
-                            </div>
+                            <div class="card__header"><h3>Hourly Throughput (Last 24H)</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="hourly-throughput-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Daily Throughput Trend</h3>
-                            </div>
+                            <div class="card__header"><h3>Daily Throughput Trend</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="daily-throughput-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Throughput by Process</h3>
-                            </div>
+                            <div class="card__header"><h3>Throughput by Process</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="process-breakdown-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Peak Hour Analysis</h3>
-                            </div>
+                            <div class="card__header"><h3>Peak Hour Analysis</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="peak-hours-chart"></canvas>
@@ -185,7 +175,7 @@
                 </div>
 
                 <!-- Errors Tab -->
-                <div id="errors" class="tab-content">
+                <div id="errors" class="tab-content" role="tabpanel" aria-labelledby="tab-errors">
                     <div class="controls-bar">
                         <select class="form-control" id="error-period">
                             <option value="7d">Last 7 Days</option>
@@ -197,42 +187,31 @@
 
                     <div class="chart-grid">
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Error Classification</h3>
-                            </div>
+                            <div class="card__header"><h3>Error Classification</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="error-classification-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Error Trend Over Time</h3>
-                            </div>
+                            <div class="card__header"><h3>Error Trend Over Time</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="error-trend-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Error Severity Distribution</h3>
-                            </div>
+                            <div class="card__header"><h3>Error Severity Distribution</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="error-severity-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Resolution Time Metrics</h3>
-                            </div>
+                            <div class="card__header"><h3>Resolution Time Metrics</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="resolution-time-chart"></canvas>
@@ -243,56 +222,41 @@
                 </div>
 
                 <!-- Team Metrics Tab -->
-                <div id="team" class="tab-content">
+                <div id="team" class="tab-content" role="tabpanel" aria-labelledby="tab-team">
                     <div class="team-grid">
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Team Member Performance</h3>
-                            </div>
+                            <div class="card__header"><h3>Team Member Performance</h3></div>
                             <div class="card__body">
-                                <div class="team-members" id="team-members">
-                                    <!-- Team member cards will be generated by JS -->
-                                </div>
+                                <div class="team-members" id="team-members"></div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Team Productivity Over Time</h3>
-                            </div>
+                            <div class="card__header"><h3>Team Productivity Over Time</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="team-productivity-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Task Completion Rates</h3>
-                            </div>
+                            <div class="card__header"><h3>Task Completion Rates</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="task-completion-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Weekly Utilization Heatmap</h3>
-                            </div>
+                            <div class="card__header"><h3>Weekly Utilization Heatmap</h3></div>
                             <div class="card__body">
-                                <div class="heatmap-grid" id="utilization-heatmap">
-                                    <!-- Heatmap will be generated by JS -->
-                                </div>
+                                <div class="heatmap-grid" id="utilization-heatmap"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Capacity Planning Tab -->
-                <div id="capacity" class="tab-content">
+                <div id="capacity" class="tab-content" role="tabpanel" aria-labelledby="tab-capacity">
                     <div class="controls-bar">
                         <select class="form-control" id="forecast-period">
                             <option value="7d">Next 7 Days</option>
@@ -304,42 +268,27 @@
 
                     <div class="chart-grid">
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Capacity Forecast</h3>
-                            </div>
+                            <div class="card__header"><h3>Capacity Forecast</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="capacity-forecast-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Resource Bottlenecks</h3>
-                            </div>
+                            <div class="card__header"><h3>Resource Bottlenecks</h3></div>
                             <div class="card__body">
-                                <div class="bottlenecks-list" id="bottlenecks-list">
-                                    <!-- Bottlenecks will be generated by JS -->
-                                </div>
+                                <div class="bottlenecks-list" id="bottlenecks-list"></div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Capacity Recommendations</h3>
-                            </div>
+                            <div class="card__header"><h3>Capacity Recommendations</h3></div>
                             <div class="card__body">
-                                <div class="recommendations-list" id="recommendations-list">
-                                    <!-- Recommendations will be generated by JS -->
-                                </div>
+                                <div class="recommendations-list" id="recommendations-list"></div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Growth Projection</h3>
-                            </div>
+                            <div class="card__header"><h3>Growth Projection</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="growth-projection-chart"></canvas>
@@ -350,7 +299,7 @@
                 </div>
 
                 <!-- Alerts Tab -->
-                <div id="alerts" class="tab-content">
+                <div id="alerts" class="tab-content" role="tabpanel" aria-labelledby="tab-alerts">
                     <div class="controls-bar">
                         <select class="form-control" id="alert-filter">
                             <option value="all">All Alerts</option>
@@ -362,35 +311,23 @@
 
                     <div class="alerts-grid">
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Active Alerts</h3>
-                            </div>
+                            <div class="card__header"><h3>Active Alerts</h3></div>
                             <div class="card__body">
-                                <div class="alerts-list" id="active-alerts">
-                                    <!-- Active alerts will be generated by JS -->
-                                </div>
+                                <div class="alerts-list" id="active-alerts"></div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Alert History</h3>
-                            </div>
+                            <div class="card__header"><h3>Alert History</h3></div>
                             <div class="card__body">
                                 <div class="chart-container" style="height: 300px; position: relative;">
                                     <canvas id="alert-history-chart"></canvas>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <div class="card__header">
-                                <h3>Threshold Configuration</h3>
-                            </div>
+                            <div class="card__header"><h3>Threshold Configuration</h3></div>
                             <div class="card__body">
-                                <div class="thresholds-list" id="thresholds-list">
-                                    <!-- Thresholds will be generated by JS -->
-                                </div>
+                                <div class="thresholds-list" id="thresholds-list"></div>
                             </div>
                         </div>
                     </div>
