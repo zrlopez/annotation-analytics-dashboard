@@ -167,6 +167,13 @@ function getCanvas(id) {
     return el;
 }
 
+function setLoading(containerId, isLoading) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (isLoading) { el.classList.add('loading'); }
+    else           { el.classList.remove('loading'); }
+}
+
 function tryLoadTab(chartKey, loaderFn) {
     try {
         loaderFn();
@@ -174,6 +181,14 @@ function tryLoadTab(chartKey, loaderFn) {
         console.error(`Tab load failed for "${chartKey}":`, err);
         charts[chartKey] = null;
     }
+}
+
+function tryLoadTabWithSpinner(containerId, chartKey, loaderFn) {
+    setLoading(containerId, true);
+    setTimeout(() => {
+        tryLoadTab(chartKey, loaderFn);
+        setLoading(containerId, false);
+    }, 0);
 }
 
 // ─── Theme toggle ──────────────────────────────────────────────────────────

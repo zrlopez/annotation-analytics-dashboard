@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Real-time performance analytics dashboard for throughput, errors, team efficiency, and capacity planning.">
+    <link rel="icon" href="image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
     <title>Performance Analytics Tool</title>
+    <script>document.documentElement.setAttribute("data-color-scheme",localStorage.getItem("theme")||"light");</script>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" integrity="sha256-oFRJCkpnlDNDPnWA1N3BSTBnz8PsrN5RFqMWCHSK9Yk=" crossorigin="anonymous"></script>
 </head>
@@ -119,7 +122,7 @@
                             <div class="card__body">
                                 <div class="quick-actions">
                                     <button class="btn btn--sm btn--outline">Generate Report</button>
-                                    <button class="btn btn--sm btn--outline" id="export-csv-btn">Export CSV</button>
+                                    <button class="btn btn--sm btn--outline" id="export-csv-btn" title="Download throughput data as CSV">Export Throughput CSV</button>
                                     <button class="btn btn--sm btn--primary">Configure Alerts</button>
                                 </div>
                             </div>
