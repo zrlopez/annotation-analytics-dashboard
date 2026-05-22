@@ -67,5 +67,5 @@ Explore additional analytics and web solutions at [zrl.dev](https://zrl.dev).
 
 ## License
 
-MIT License © 2025 Zachary Ryan (Rothschild) Lopez.   
+MIT License © 2025 Zachary Ryan Lopez.   
 See `LICENSE` for details.
