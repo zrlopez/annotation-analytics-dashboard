@@ -252,11 +252,13 @@ function initializeTabNavigation() {
     });
 }
 
-function applyTrendColor(elementId, changeValue) {
+function applyTrendColor(elementId, changeValue, invert = false) {
     const el = document.getElementById(elementId);
     if (!el) return;
     el.classList.remove('trend-positive', 'trend-negative');
-    el.classList.add(changeValue && changeValue.startsWith('-') ? 'trend-negative' : 'trend-positive');
+    const isNegative = changeValue && changeValue.startsWith('-');
+    const isBad = invert ? !isNegative : isNegative;
+    el.classList.add(isBad ? 'trend-negative' : 'trend-positive');
 }
 
 function loadOverviewTab() {
@@ -269,7 +271,7 @@ function loadOverviewTab() {
     document.getElementById('capacity-utilization').textContent = data.kpis.capacityUtilization + '%';
     document.getElementById('capacity-trend').textContent = data.kpis.capacityUtilizationChange;
     applyTrendColor('throughput-trend', data.kpis.throughputChange);
-    applyTrendColor('error-trend', data.kpis.errorRateChange);
+    applyTrendColor('error-trend', data.kpis.errorRateChange, true);
     applyTrendColor('efficiency-trend', data.kpis.teamEfficiencyChange);
     applyTrendColor('capacity-trend', data.kpis.capacityUtilizationChange);
 
