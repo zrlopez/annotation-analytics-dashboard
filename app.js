@@ -83,23 +83,33 @@ const data = {
       ]
     }
   },
+  // ─── PRIVACY NOTICE ─────────────────────────────────────────────────────────
+  // All team data below is SYNTHETIC. No real employee names, identifiers, or
+  // personally identifiable metrics may appear in client-side source files.
+  //
+  // Production migration path:
+  //   Replace this entire teamData block with a fetch() call to a
+  //   JWT-authenticated backend endpoint: GET /api/v1/team/performance
+  //   The API enforces require_role('analyst','admin') before returning data.
+  //   See SECURITY.md §Data Privacy for the full policy.
+  // ────────────────────────────────────────────────────────────────────────────
   "teamData": {
     "members": [
-      {"name": "Alex Chen",       "avatar": "AC", "productivity": 94, "tasksCompleted": 127, "avgTaskTime": 2.3},
-      {"name": "Maria Rodriguez", "avatar": "MR", "productivity": 91, "tasksCompleted": 118, "avgTaskTime": 2.6},
-      {"name": "David Kim",       "avatar": "DK", "productivity": 89, "tasksCompleted": 115, "avgTaskTime": 2.8},
-      {"name": "Sarah Johnson",   "avatar": "SJ", "productivity": 87, "tasksCompleted": 109, "avgTaskTime": 3.1},
-      {"name": "Michael Brown",   "avatar": "MB", "productivity": 85, "tasksCompleted": 102, "avgTaskTime": 3.4},
-      {"name": "Lisa Wang",       "avatar": "LW", "productivity": 83, "tasksCompleted":  98, "avgTaskTime": 3.6}
+      {"name": "Analyst A", "avatar": "A1", "productivity": 94, "tasksCompleted": 127, "avgTaskTime": 2.3},
+      {"name": "Analyst B", "avatar": "A2", "productivity": 91, "tasksCompleted": 118, "avgTaskTime": 2.6},
+      {"name": "Analyst C", "avatar": "A3", "productivity": 89, "tasksCompleted": 115, "avgTaskTime": 2.8},
+      {"name": "Analyst D", "avatar": "A4", "productivity": 87, "tasksCompleted": 109, "avgTaskTime": 3.1},
+      {"name": "Analyst E", "avatar": "A5", "productivity": 85, "tasksCompleted": 102, "avgTaskTime": 3.4},
+      {"name": "Analyst F", "avatar": "A6", "productivity": 83, "tasksCompleted":  98, "avgTaskTime": 3.6}
     ],
     "productivity": prodDates.map((date, i) => ({ date, value: Math.min(104, 82 + i * 0.9 + Math.round(Math.sin(i) * 2)) })),
     "utilization": [
-      {"member": "Alex Chen",       "mon": 95, "tue": 92, "wed": 88, "thu": 94, "fri": 90},
-      {"member": "Maria Rodriguez", "mon": 89, "tue": 93, "wed": 91, "thu": 87, "fri": 94},
-      {"member": "David Kim",       "mon": 91, "tue": 87, "wed": 93, "thu": 89, "fri": 92},
-      {"member": "Sarah Johnson",   "mon": 85, "tue": 91, "wed": 87, "thu": 92, "fri": 86},
-      {"member": "Michael Brown",   "mon": 88, "tue": 84, "wed": 90, "thu": 86, "fri": 89},
-      {"member": "Lisa Wang",       "mon": 82, "tue": 88, "wed": 85, "thu": 91, "fri": 83}
+      {"member": "Analyst A", "mon": 95, "tue": 92, "wed": 88, "thu": 94, "fri": 90},
+      {"member": "Analyst B", "mon": 89, "tue": 93, "wed": 91, "thu": 87, "fri": 94},
+      {"member": "Analyst C", "mon": 91, "tue": 87, "wed": 93, "thu": 89, "fri": 92},
+      {"member": "Analyst D", "mon": 85, "tue": 91, "wed": 87, "thu": 92, "fri": 86},
+      {"member": "Analyst E", "mon": 88, "tue": 84, "wed": 90, "thu": 86, "fri": 89},
+      {"member": "Analyst F", "mon": 82, "tue": 88, "wed": 85, "thu": 91, "fri": 83}
     ]
   },
   "capacityData": {
