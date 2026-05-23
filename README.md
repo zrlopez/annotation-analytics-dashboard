@@ -72,23 +72,24 @@ Key implementation improvements:
 
 ## Screenshots
 
+![Live Demo](screenshots/00-live-demo.png)
+
 <details>
-<summary>📸 <strong>View screenshots (6)</strong></summary>
+<summary>📸 <strong>View all screenshots (5)</strong></summary>
 
 <br>
 
 <table>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/f9e8ee67-8847-4bad-8609-1778954118ee" width="320" alt="Overview"/></td>
-    <td><img src="https://github.com/user-attachments/assets/c6713a27-6e69-4213-aa47-dccb413088fd" width="320" alt="Throughput"/></td>
+    <td><img src="screenshots/01-overview.png" width="320" alt="Overview"/></td>
+    <td><img src="screenshots/02-throughput.png" width="320" alt="Throughput"/></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/15b59fca-348b-4a75-8604-eed17c51614c" width="320" alt="Errors"/></td>
-    <td><img src="https://github.com/user-attachments/assets/e8634533-9ab3-49a2-8184-155e5988ef91" width="320" alt="Team Metrics"/></td>
+    <td><img src="screenshots/03-errors.png" width="320" alt="Errors"/></td>
+    <td><img src="screenshots/04-team.png" width="320" alt="Team Metrics"/></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/user-attachments/assets/1a3ff948-175a-4f86-bf64-b17b8ada5f72" width="320" alt="Capacity Planning"/></td>
-    <td><img src="https://github.com/user-attachments/assets/0eb932c4-8b58-463e-9dcd-ef8a908848c8" width="320" alt="Alerts"/></td>
+    <td><img src="screenshots/05-capacity.png" width="320" alt="Capacity Planning"/></td>
   </tr>
 </table>
 
