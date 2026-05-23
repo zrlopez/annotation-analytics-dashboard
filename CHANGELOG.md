@@ -1,6 +1,43 @@
 # Changelog
 
-All notable changes to this project are documented here.
+All notable changes to this project are documented here. This project follows [Semantic Versioning](https://semver.org/).
+
+---
+
+## [1.3.0] — 2026-05-22
+
+### Improvements
+
+- **Theme persistence** — `localStorage.setItem('theme', newTheme)` now saves the user's dark/light preference across page reloads. Previously the theme reset on every visit.
+
+- **CSV export guard** — `exportThroughputCSV()` now checks for `data.throughputData.daily` before execution, logging a `console.error` and returning early if data is unavailable. Prevents a silent crash if export is triggered before data loads.
+
+- **Upfront canvas resolution in `loadThroughputTab`** — All four canvas contexts (`hourly`, `daily`, `process`, `peak`) are now resolved at the top of the function with a single combined null check. Previously each canvas was checked mid-function with sequential early returns, allowing partial renders where some charts loaded and others failed silently.
+
+- **`.getContext('2d')` fix across `loadErrorsTab`** — `errorClassification`, `errorTrend`, `errorSeverity`, and `resolutionTime` charts were being passed raw canvas elements instead of 2D rendering contexts. Fixed to use `.getContext('2d')` consistently, matching Chart.js expectations and preventing errors in strict mode.
+
+### Documentation
+
+- Screenshots reorganized into `screenshots/` folder with descriptive sequential filenames (`00-live-demo`, `01-overview`, etc.)
+- README updated to reference local screenshot paths instead of GitHub attachment URLs
+- Updated screenshots reflect the rebuilt Next.js version of the dashboard
+
+---
+
+## [1.2.0] — 2026-05-22
+
+### Major Changes
+
+- **Full rebuild as Annotation Analytics Dashboard** — Project migrated from HTML/CSS/JavaScript (Chart.js) to **Next.js 14 + TypeScript + Recharts**. The rebuild introduces live 5-second KPI state updates, a custom `useLiveKpis` React hook, Tailwind CSS styling, Framer Motion animations, and accessible ARIA-labeled tab navigation. The original single-page app is superseded by this version.
+
+### Features Added in Rebuild
+
+- Live KPI cards: throughput, error rate, team efficiency, capacity utilization — updating every 5 seconds with independent ±2.5% variation per metric
+- Alert threshold engine syncing live to KPI values with automatic warning state detection
+- Team performance view: per-member productivity cards, task completion bar charts, weekly utilization heatmap
+- Capacity forecasting tab with historical vs. predicted trend chart and forward-looking forecast bands
+- Dark/light theme toggle with instant transition
+- Full ARIA accessibility: labeled tabpanels, keyboard navigation support
 
 ---
 
@@ -34,6 +71,8 @@ All notable changes to this project are documented here.
 
 ### Initial Release
 
+First public release of the **Performance Analytics Tool** — a standalone single-page application built with HTML, CSS, and JavaScript (Chart.js).
+
 - Interactive single-page dashboard with six tabbed views: Overview, Throughput, Errors, Team Metrics, Capacity Planning, and Alerts
 - Real-time KPI cards with live 5-second update cycle
 - Chart.js visualizations: line, bar, pie, doughnut charts with mini sparklines
@@ -41,3 +80,6 @@ All notable changes to this project are documented here.
 - Team utilization heatmap and member performance cards
 - Configurable alert thresholds and alert history
 - Responsive dark-themed UI with custom CSS
+- MIT License, README, and initial documentation
+
+> **Note:** This version has been superseded by the Next.js rebuild in v1.2.0, now named **Annotation Analytics Dashboard**.
