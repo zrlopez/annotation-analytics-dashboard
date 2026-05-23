@@ -198,13 +198,19 @@ function initThemeToggle() {
     const html = document.documentElement;
     btn.addEventListener('click', () => {
         const isDark = html.getAttribute('data-color-scheme') === 'dark';
-        html.setAttribute('data-color-scheme', isDark ? 'light' : 'dark');
+        const newTheme = isDark ? 'light' : 'dark';
+        html.setAttribute('data-color-scheme', newTheme);
+        localStorage.setItem('theme', newTheme);
         btn.textContent = isDark ? '🌙 Dark' : '☀️ Light';
     });
 }
 
 // ─── CSV Export ────────────────────────────────────────────────────────────
 function exportThroughputCSV() {
+    if (!data.throughputData || !data.throughputData.daily) {
+        console.error('Throughput data not available');
+        return;
+    }
     const rows = [['Date', 'Daily Throughput']];
     data.throughputData.daily.forEach(d => rows.push([d.date, d.value]));
     const csv = rows.map(r => r.join(',')).join('\n');
@@ -321,7 +327,12 @@ function createMiniChart(canvasId, chartData) {
 
 function loadThroughputTab() {
     const hourlyCtx = getCanvas('hourly-throughput-chart');
-    if (!hourlyCtx) return;
+    const dailyCtx = getCanvas('daily-throughput-chart');
+    const processCtx = getCanvas('process-breakdown-chart');
+    const peakCtx = getCanvas('peak-hours-chart');
+    
+    if (!hourlyCtx || !dailyCtx || !processCtx || !peakCtx) return;
+    
     destroyChart('hourlyThroughput');
     charts.hourlyThroughput = new Chart(hourlyCtx.getContext('2d'), {
         type: 'line',
@@ -332,8 +343,6 @@ function loadThroughputTab() {
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Requests per Hour' } } } }
     });
 
-    const dailyCtx = getCanvas('daily-throughput-chart');
-    if (!dailyCtx) return;
     destroyChart('dailyThroughput');
     charts.dailyThroughput = new Chart(dailyCtx.getContext('2d'), {
         type: 'line',
@@ -344,8 +353,6 @@ function loadThroughputTab() {
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Daily Requests' } } } }
     });
 
-    const processCtx = getCanvas('process-breakdown-chart');
-    if (!processCtx) return;
     destroyChart('processBreakdown');
     charts.processBreakdown = new Chart(processCtx.getContext('2d'), {
         type: 'pie',
@@ -353,8 +360,6 @@ function loadThroughputTab() {
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
     });
 
-    const peakCtx = getCanvas('peak-hours-chart');
-    if (!peakCtx) return;
     destroyChart('peakHours');
     const peakHours = data.throughputData.hourly.slice().sort((a, b) => b.value - a.value).slice(0, 6);
     charts.peakHours = new Chart(peakCtx.getContext('2d'), {
@@ -366,39 +371,40 @@ function loadThroughputTab() {
 
 function loadErrorsTab() {
     const classificationCtx = getCanvas('error-classification-chart');
+    const trendCtx = getCanvas('error-trend-chart');
+    const severityCtx = getCanvas('error-severity-chart');
+    const resolutionCtx = getCanvas('resolution-time-chart');
+    
     if (classificationCtx) {
         destroyChart('errorClassification');
-        charts.errorClassification = new Chart(classificationCtx, {
+        charts.errorClassification = new Chart(classificationCtx.getContext('2d'), {
             type: 'pie',
             data: { labels: data.errorData.classification.map(d => d.type), datasets: [{ data: data.errorData.classification.map(d => d.count), backgroundColor: colors.slice(0, 5), borderWidth: 2, borderColor: '#ffffff' }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } }, tooltip: { callbacks: { label: function(context) { const v = context.parsed; const t = context.dataset.data.reduce((a, b) => a + b, 0); return `${context.label}: ${v} (${((v/t)*100).toFixed(1)}%)`; } } } } }
         });
     }
 
-    const trendCtx = getCanvas('error-trend-chart');
     if (trendCtx) {
         destroyChart('errorTrend');
-        charts.errorTrend = new Chart(trendCtx, {
+        charts.errorTrend = new Chart(trendCtx.getContext('2d'), {
             type: 'line',
             data: { labels: data.errorData.trends.map(d => new Date(d.date).toLocaleDateString()), datasets: [{ label: 'Daily Errors', data: data.errorData.trends.map(d => d.value), borderColor: colors[2], backgroundColor: colors[2] + '20', fill: true, tension: 0.4 }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Number of Errors' } } } }
         });
     }
 
-    const severityCtx = getCanvas('error-severity-chart');
     if (severityCtx) {
         destroyChart('errorSeverity');
-        charts.errorSeverity = new Chart(severityCtx, {
+        charts.errorSeverity = new Chart(severityCtx.getContext('2d'), {
             type: 'doughnut',
             data: { labels: data.errorData.severity.map(d => d.level), datasets: [{ data: data.errorData.severity.map(d => d.count), backgroundColor: [colors[2], colors[5], colors[1], colors[3]], borderWidth: 2, borderColor: '#ffffff' }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true } } } }
         });
     }
 
-    const resolutionCtx = getCanvas('resolution-time-chart');
     if (resolutionCtx) {
         destroyChart('resolutionTime');
-        charts.resolutionTime = new Chart(resolutionCtx, {
+        charts.resolutionTime = new Chart(resolutionCtx.getContext('2d'), {
             type: 'bar',
             data: { labels: data.errorData.resolutionTime.byType.map(d => d.type), datasets: [{ label: 'Resolution Time (hours)', data: data.errorData.resolutionTime.byType.map(d => d.time), backgroundColor: colors[4] }] },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Hours' } } } }
@@ -623,26 +629,29 @@ function simulateDataUpdate() {
         const e = document.getElementById('error-rate');
         const ef = document.getElementById('team-efficiency');
         const cp = document.getElementById('capacity-utilization');
-        if (t)  t.textContent  = data.kpis.totalThroughput.toLocaleString();
-        if (e)  e.textContent  = data.kpis.errorRate + '%';
-        if (ef) ef.textContent = data.kpis.teamEfficiency + '%';
-        if (cp) cp.textContent = data.kpis.capacityUtilization + '%';
         const tt = document.getElementById('throughput-trend');
         const et = document.getElementById('error-trend');
         const ft = document.getElementById('efficiency-trend');
         const ct = document.getElementById('capacity-trend');
+        
+        if (t) t.textContent = data.kpis.totalThroughput.toLocaleString();
+        if (e) e.textContent = data.kpis.errorRate + '%';
+        if (ef) ef.textContent = data.kpis.teamEfficiency + '%';
+        if (cp) cp.textContent = data.kpis.capacityUtilization + '%';
         if (tt) tt.textContent = data.kpis.throughputChange;
         if (et) et.textContent = data.kpis.errorRateChange;
         if (ft) ft.textContent = data.kpis.teamEfficiencyChange;
         if (ct) ct.textContent = data.kpis.capacityUtilizationChange;
+        
         applyTrendColor('throughput-trend', data.kpis.throughputChange);
         applyTrendColor('error-trend', data.kpis.errorRateChange, true);
         applyTrendColor('efficiency-trend', data.kpis.teamEfficiencyChange);
         applyTrendColor('capacity-trend', data.kpis.capacityUtilizationChange);
     }
-    // Sync alert threshold current values to live KPIs
-    data.alertsData.thresholds.forEach(t => {
-        if (t.metric === 'Error Rate')           { t.current = data.kpis.errorRate;           t.status = data.kpis.errorRate           >= t.threshold ? 'warning' : 'ok'; }
-        if (t.metric === 'Capacity Utilization') { t.current = data.kpis.capacityUtilization; t.status = data.kpis.capacityUtilization >= t.threshold ? 'warning' : 'ok'; }
-    });
+    if (data.alertsData && data.alertsData.thresholds) {
+        data.alertsData.thresholds.forEach(t => {
+            if (t.metric === 'Error Rate')           { t.current = data.kpis.errorRate;           t.status = data.kpis.errorRate           >= t.threshold ? 'warning' : 'ok'; }
+            if (t.metric === 'Capacity Utilization') { t.current = data.kpis.capacityUtilization; t.status = data.kpis.capacityUtilization >= t.threshold ? 'warning' : 'ok'; }
+        });
+    }
 }
