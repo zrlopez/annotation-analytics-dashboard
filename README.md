@@ -1,5 +1,10 @@
 # Annotation Analytics Dashboard (formerly Performance Analytics Tool)
 
+![Status](https://img.shields.io/badge/status-portfolio--ready-brightgreen)
+![Stack](https://img.shields.io/badge/stack-Next.js%20%2B%20TypeScript%20%2B%20Recharts-0A66C2)
+![Docs](https://img.shields.io/badge/docs-Markdown-lightgrey)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
 **Annotation Analytics Dashboard** is an interactive real-time dashboard for tracking ML data operations metrics — including annotation quality trends, pipeline throughput, team efficiency, and capacity utilization — with live state updates every 5 seconds.
 
 > **📝 Note:** This project was previously named **"Performance Analytics Tool"** and built with HTML/CSS/JavaScript. It has been fully rebuilt in **Next.js 14** with TypeScript and Recharts for improved real-time capabilities and accessibility.
