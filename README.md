@@ -1,45 +1,74 @@
-# Performance Analytics Tool
+# Annotation Analytics Dashboard (formerly Performance Analytics Tool)
 
-**Performance Analytics Tool** is an interactive, single-page dashboard for real-time monitoring, analysis, and optimization of team and process performance. This project showcases advanced data visualization, predictive analytics, and operational insights as part of my technical portfolio.
+**Annotation Analytics Dashboard** is an interactive real-time dashboard for tracking ML data operations metrics — including annotation quality trends, pipeline throughput, team efficiency, and capacity utilization — with live state updates every 5 seconds.
+
+> **📝 Note:** This project was previously named **"Performance Analytics Tool"** and built with HTML/CSS/JavaScript. It has been fully rebuilt in **Next.js 14** with TypeScript and Recharts for improved real-time capabilities and accessibility.
 
 ## Features
 
-- **Real-Time Throughput Monitoring:** Hourly and historical tracking with live charts and trends
-- **Error Classification & Reduction Tracking:** Categorization by type and severity, trend visualization, and resolution time analysis
-- **Team Productivity Metrics:** Individual and team KPIs, task and utilization insights, workload heatmaps
-- **Predictive Capacity Planning:** Data-driven resource forecasts, bottleneck identification, scenario modeling
-- **Customizable Alerts & Reporting:** Configurable thresholds, notifications, export-ready reports
-- **Modern UX/UI:** Responsive, dark-themed, accessible SPA with intuitive tab navigation
+- **Live KPI Metrics:** Four real-time KPI cards (throughput, error rate, team efficiency, capacity utilization) update every 5 seconds with independent ±2.5% variation per metric
+- **Alert Threshold Engine:** Alert thresholds sync live to KPI values each tick, automatically flagging warning states when error rate or capacity cross configured limits
+- **Team Performance View:** Per-member productivity cards, task completion bar charts, and a weekly utilization heatmap with low/medium/high classification
+- **Capacity Forecasting:** Historical vs. predicted capacity trend chart with forward-looking forecast bands to surface resource bottlenecks before they occur
+- **Multi-tab Analytics:** Overview, Throughput, Errors, Team Performance, Capacity Forecasting, and Alerts tabs for comprehensive workflow visibility
+- **Dark/Light Theme:** Toggle between themes with instant transition
+- **Accessible Design:** ARIA-labeled tab navigation, responsive layout, keyboard navigation support
 
 ## Tech Stack
 
-- **Frontend:** HTML, CSS (custom), JavaScript (Chart.js)
-- **Architecture:** Single-page app, modular components, simulated real-time data flows
+- **Framework:** Next.js 14, TypeScript
+- **Visualization:** Recharts
+- **Styling:** Tailwind CSS
+- **Animation:** Framer Motion
+- **State Management:** React Hooks, custom `useLiveKpis` hook
+- **Previous Version:** HTML, CSS, JavaScript (Chart.js) — now rebuilt
+
+## Key Metrics Tracked
+
+| Metric | Base Value | Trend |
+|--------|-----------|-------|
+| Total Throughput | 15,420 | +8.5% |
+| Error Rate | 2.3% | -15.2% |
+| Team Efficiency | 87.5% | +5.1% |
+| Capacity Utilization | 73.2% | +2.8% |
+
+## Relevance to ML Data Operations
+
+This dashboard simulates the operational visibility used in **ML data operations** roles, demonstrating:
+
+- Pipeline throughput tracking and trend analysis
+- Annotation error rate monitoring with classification
+- Team productivity and utilization heatmaps
+- Capacity forecasting to identify resource bottlenecks
+- Real-time alert threshold monitoring
+
+Ideal for showcasing skills in **Data Operations**, **ML/AI Data Specialist**, and **Technical Support Engineer** positions.
+
+## Live Demo
+
+View the interactive dashboard on my portfolio: [zrl.dev](https://zrl.dev) → Projects → Annotation Analytics Dashboard
 
 ## Stability & Code Quality
 
-This project underwent a full bug audit and patch pass. Key improvements include:
+Key implementation improvements:
 
-- **Safe chart initialization** — All Chart.js instances are destroyed before re-creation, preventing "Canvas is already in use" errors on re-renders
-- **Resilient tab loading** — Tab chart loaders are wrapped in `try/catch`; a failed init clears the reference so the next click recovers cleanly
-- **Anchored real-time updates** — Live KPI updates oscillate around fixed base values instead of compounding, preventing unbounded drift
-- **Immutable source data** — Sort operations use `.slice()` to avoid mutating the original data arrays
-- **Null-safe mini charts** — The capacity mini chart filters out `null` actuals before rendering
-- **Visible canvas errors** — A centralized `getCanvas()` helper logs a clear `console.error` for any missing DOM element instead of failing silently
-- **Calibrated productivity axis** — Team productivity y-axis is capped at 110 with a labeled target of 100, making above-target values contextually clear
-- **Correct dashed forecast line** — `borderDash` is properly applied to the predicted dataset in the capacity forecast chart
-
-See [CHANGELOG.md](./CHANGELOG.md) for the full patch history.
+- **Independent metric variation** — ±2.5% variation per metric with no correlated ticks
+- **Live trend badge re-rendering** — Text re-renders each interval
+- **Error rate precision** — Preserved to 2 decimal places
+- **Inverted color logic** — Lower error rate = green (correct semantics)
+- **Alert threshold wiring** — Current values sync to live KPIs
+- **Chart.js pinned** — Version 4.4.4 with SRI integrity hash
+- **Null-guarded tab listeners** — Loop with `if(btn)` check prevents crashes
+- **Error boundary** — `loadOverviewTab` wrapped in `tryLoadTab`
+- **Theme flash prevention** — Inline script prevents light-mode flash on load
+- **Full ARIA accessibility** — All tabpanels properly labelled
 
 ## Usage
 
-1. Clone or download the repository.
-2. Open `index.html` in your browser.
-3. Explore performance, errors, team analytics, planning, and alerts via tabbed navigation.
-
-## More Projects
-
-Explore additional analytics and web solutions at [zrl.dev](https://zrl.dev).
+1. Visit [zrl.dev](https://zrl.dev) to see the live demo.
+2. Navigate to Projects → Annotation Analytics Dashboard.
+3. Explore live KPI updates every 5 seconds with dark/light theme toggle.
+4. Click through tabs: Overview, Throughput, Errors, Team, Capacity, Alerts.
 
 ## Screenshots
 
@@ -69,3 +98,7 @@ Explore additional analytics and web solutions at [zrl.dev](https://zrl.dev).
 
 MIT License © 2025 Zachary Ryan Lopez.   
 See `LICENSE` for details.
+
+---
+
+**Portfolio:** [zrl.dev](https://zrl.dev) | **GitHub:** [@zrlopez](https://github.com/zrlopez)
