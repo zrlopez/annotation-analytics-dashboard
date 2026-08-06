@@ -1,25 +1,14 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
-type Status = 'operational' | 'warning' | 'error' | 'ok';
+export function StatusBadge({ status }: { status: 'operational' | 'warning' | 'error' | 'ok' | 'acknowledged' | 'active' }) {
+  const styles = {
+    operational: 'bg-success/15 text-success',
+    ok: 'bg-success/15 text-success',
+    warning: 'bg-warning/15 text-warning',
+    error: 'bg-error/15 text-error',
+    active: 'bg-error/15 text-error',
+    acknowledged: 'bg-border/30 text-muted'
+  }
 
-const styles: Record<Status, string> = {
-  operational: 'bg-[var(--color-success-highlight)] text-success',
-  ok:          'bg-[var(--color-success-highlight)] text-success',
-  warning:     'bg-[var(--color-warning-highlight)] text-warning',
-  error:       'bg-[var(--color-error-highlight)]   text-error',
-};
-
-export function StatusBadge({ status, label }: { status: Status; label?: string }) {
-  const display = label ?? status.charAt(0).toUpperCase() + status.slice(1);
-  return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium',
-        styles[status],
-      )}
-    >
-      <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden />
-      {display}
-    </span>
-  );
+  return <span className={cn('inline-flex rounded-full px-2 py-1 text-xs font-medium capitalize', styles[status])}>{status}</span>
 }

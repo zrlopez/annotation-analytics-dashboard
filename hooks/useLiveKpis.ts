@@ -1,45 +1,29 @@
-'use client';
+'use client'
+import { useState, useEffect } from 'react'
+import type { KPIs } from '@/lib/types'
+import { data } from '@/lib/data'
 
-import { useState, useEffect, useRef } from 'react';
-import type { KpiSnapshot } from '@/lib/types';
-import { drift } from '@/lib/utils';
-import { initialData } from '@/lib/data';
-
-const BASE = initialData.kpis;
-
-function formatChange(current: number, base: number, suffix = ''): string {
-  const delta = ((current - base) / base) * 100;
-  const sign = delta >= 0 ? '+' : '';
-  return `${sign}${delta.toFixed(1)}%${suffix}`;
+function jitter(value: number, pct = 0.025): number {
+  return Math.round(value * (1 + (Math.random() * 2 - 1) * pct) * 10) / 10
 }
 
-export function useLiveKpis(intervalMs = 5000): KpiSnapshot {
-  const [kpis, setKpis] = useState<KpiSnapshot>(BASE);
-  const baseRef = useRef(BASE);
+export function useLiveKpis(intervalMs = 5000): { kpis: KPIs; lastUpdated: Date } {
+  const [kpis, setKpis] = useState<KPIs>(data.kpis)
+  const [lastUpdated, setLastUpdated] = useState(new Date())
 
   useEffect(() => {
     const id = setInterval(() => {
-      setKpis(prev => {
-        const totalThroughput      = Math.round(drift(prev.totalThroughput));
-        const errorRate            = Math.round(drift(prev.errorRate) * 10) / 10;
-        const teamEfficiency       = Math.round(drift(prev.teamEfficiency) * 10) / 10;
-        const capacityUtilization  = Math.round(drift(prev.capacityUtilization) * 10) / 10;
+      setKpis(prev => ({
+        ...prev,
+        totalThroughput: Math.round(jitter(prev.totalThroughput)),
+        errorRate: Math.round(jitter(prev.errorRate) * 10) / 10,
+        teamEfficiency: Math.round(jitter(prev.teamEfficiency) * 10) / 10,
+        capacityUtilization: Math.round(jitter(prev.capacityUtilization) * 10) / 10,
+      }))
+      setLastUpdated(new Date())
+    }, intervalMs)
+    return () => clearInterval(id)
+  }, [intervalMs])
 
-        return {
-          totalThroughput,
-          throughputChange:          formatChange(totalThroughput,     baseRef.current.totalThroughput),
-          errorRate,
-          errorRateChange:           formatChange(errorRate,            baseRef.current.errorRate),
-          teamEfficiency,
-          teamEfficiencyChange:      formatChange(teamEfficiency,       baseRef.current.teamEfficiency),
-          capacityUtilization,
-          capacityUtilizationChange: formatChange(capacityUtilization,  baseRef.current.capacityUtilization),
-        };
-      });
-    }, intervalMs);
-
-    return () => clearInterval(id);
-  }, [intervalMs]);
-
-  return kpis;
+  return { kpis, lastUpdated }
 }

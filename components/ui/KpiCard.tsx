@@ -1,64 +1,28 @@
-'use client';
+import { SparkLine } from '@/components/charts'
 
-import { cn, formatNumber } from '@/lib/utils';
-import { SparkLine } from '@/components/charts/SparkLine';
-import type { DailyPoint } from '@/lib/types';
-
-interface KpiCardProps {
-  label:      string;
-  value:      number | string;
-  change:     string;
-  unit?:      string;
-  sparkData?: DailyPoint[];
-  decimals?:  number;
-  className?: string;
-}
-
-export function KpiCard({ label, value, change, unit, sparkData, decimals = 0, className }: KpiCardProps) {
-  const isPositive = change.startsWith('+');
-  const isNeutral  = change === '—' || change === '';
-
-  const displayValue =
-    typeof value === 'number' ? formatNumber(value, decimals) : value;
+export function KpiCard({
+  title,
+  value,
+  change,
+  unit,
+  sparklineData
+}: {
+  title: string
+  value: string | number
+  change: string
+  unit?: string
+  sparklineData?: number[]
+}) {
+  const trendClass = change.startsWith('+') ? 'bg-success/15 text-success' : 'bg-error/15 text-error'
 
   return (
-    <div
-      className={cn(
-        'flex flex-col gap-3 rounded-lg border border-[var(--color-border)] bg-surface p-5 shadow-sm',
-        className,
-      )}
-    >
-      <span className="text-xs font-medium uppercase tracking-wide text-muted">
-        {label}
-      </span>
-
-      <div className="flex items-end justify-between gap-2">
-        <div className="flex items-baseline gap-1">
-          <span className="tabular text-2xl font-bold text-[var(--color-text)]">
-            {displayValue}
-          </span>
-          {unit && (
-            <span className="text-sm text-muted">{unit}</span>
-          )}
-        </div>
-
-        {!isNeutral && (
-          <span
-            className={cn(
-              'rounded-full px-2 py-0.5 text-xs font-semibold tabular',
-              isPositive
-                ? 'bg-[var(--color-success-highlight)] text-success'
-                : 'bg-[var(--color-error-highlight)] text-error',
-            )}
-          >
-            {change}
-          </span>
-        )}
+    <div className="rounded-lg border border-border bg-surface p-4 shadow-sm">
+      <p className="text-sm text-muted">{title}</p>
+      <div className="mt-1 flex items-end gap-2">
+        <p className="text-2xl font-semibold">{value}{unit}</p>
+        <span className={`rounded-full px-2 py-0.5 text-xs ${trendClass}`}>{change}</span>
       </div>
-
-      {sparkData && sparkData.length > 0 && (
-        <SparkLine data={sparkData} positive={isPositive} />
-      )}
+      {sparklineData ? <div className="mt-3"><SparkLine data={sparklineData} /></div> : null}
     </div>
-  );
+  )
 }

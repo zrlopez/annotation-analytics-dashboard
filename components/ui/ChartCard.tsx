@@ -1,36 +1,11 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
-interface ChartCardProps {
-  title:       string;
-  subtitle?:   string;
-  children:    React.ReactNode;
-  action?:     React.ReactNode;
-  className?:  string;
-  bodyClass?:  string;
-}
-
-export function ChartCard({ title, subtitle, children, action, className, bodyClass }: ChartCardProps) {
+export function ChartCard({ title, subtitle, children, className }: { title: string; subtitle?: string; children: React.ReactNode; className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex flex-col rounded-lg border border-[var(--color-border)] bg-surface shadow-sm overflow-hidden',
-        className,
-      )}
-    >
-      <div className="flex items-start justify-between gap-4 border-b border-[var(--color-divider)] px-5 py-4">
-        <div>
-          <h3 className="font-semibold text-[var(--color-text)]" style={{ fontSize: 'var(--text-sm)' }}>
-            {title}
-          </h3>
-          {subtitle && (
-            <p className="mt-0.5 text-xs text-muted">{subtitle}</p>
-          )}
-        </div>
-        {action && <div className="shrink-0">{action}</div>}
-      </div>
-      <div className={cn('flex-1 p-5', bodyClass)}>
-        {children}
-      </div>
-    </div>
-  );
+    <section className={cn('rounded-lg border border-border bg-surface p-4 shadow-sm', className)}>
+      <h2 className="text-lg font-semibold">{title}</h2>
+      {subtitle ? <p className="text-sm text-muted">{subtitle}</p> : null}
+      <div className="mt-4">{children}</div>
+    </section>
+  )
 }

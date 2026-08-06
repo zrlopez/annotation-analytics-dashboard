@@ -1,54 +1,39 @@
-import { cn } from '@/lib/utils';
-import type { UtilizationRow } from '@/lib/types';
+'use client'
 
-const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] as const;
+import type { UtilizationRow } from '@/lib/types'
 
-function intensityClass(value: number): string {
-  if (value >= 95) return 'bg-[color-mix(in_oklch,var(--color-primary)_90%,transparent)]';
-  if (value >= 90) return 'bg-[color-mix(in_oklch,var(--color-primary)_70%,transparent)]';
-  if (value >= 85) return 'bg-[color-mix(in_oklch,var(--color-primary)_55%,transparent)]';
-  if (value >= 80) return 'bg-[color-mix(in_oklch,var(--color-primary)_40%,transparent)]';
-  if (value >= 75) return 'bg-[color-mix(in_oklch,var(--color-primary)_28%,transparent)]';
-  return                  'bg-[color-mix(in_oklch,var(--color-primary)_14%,transparent)]';
+const headers: Array<keyof Omit<UtilizationRow, 'member'>> = ['mon', 'tue', 'wed', 'thu', 'fri']
+
+function shade(value: number) {
+  const pct = Math.max(0, Math.min(100, ((value - 80) / 20) * 100))
+  return `color-mix(in oklch, var(--color-primary) ${pct}%, var(--color-surface))`
 }
 
 export function HeatmapGrid({ data }: { data: UtilizationRow[] }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-xs" role="grid" aria-label="Weekly utilization heatmap">
-        <thead>
-          <tr>
-            <th className="py-2 pr-3 text-left text-muted font-medium w-24">Member</th>
-            {DAYS.map(d => (
-              <th key={d} className="py-2 px-1 text-center text-muted font-medium">{d}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map(row => (
-            <tr key={row.member}>
-              <td className="py-1.5 pr-3 text-sm text-[var(--color-text)] font-medium">{row.member}</td>
-              {DAYS.map(day => {
-                const val = row[day.toLowerCase() as 'mon' | 'tue' | 'wed' | 'thu' | 'fri'];
-                return (
-                  <td key={day} className="py-1.5 px-1">
-                    <div
-                      className={cn(
-                        'flex h-8 w-full min-w-[2.5rem] items-center justify-center rounded text-xs font-semibold tabular',
-                        intensityClass(val),
-                        val >= 85 ? 'text-[var(--color-text-inverse)]' : 'text-[var(--color-text)]',
-                      )}
-                      title={`${row.member} ${day}: ${val}%`}
-                    >
-                      {val}%
-                    </div>
-                  </td>
-                );
-              })}
-            </tr>
+    <div className="grid gap-2">
+      <div className="grid grid-cols-6 gap-2 text-xs text-muted">
+        <div />
+        <div className="text-center">Mon</div>
+        <div className="text-center">Tue</div>
+        <div className="text-center">Wed</div>
+        <div className="text-center">Thu</div>
+        <div className="text-center">Fri</div>
+      </div>
+      {data.map(row => (
+        <div key={row.member} className="grid grid-cols-6 gap-2 items-center">
+          <div className="text-sm font-medium">{row.member}</div>
+          {headers.map(day => (
+            <div
+              key={day}
+              className="rounded-md border border-border py-2 text-center text-xs"
+              style={{ background: shade(row[day]) }}
+            >
+              {row[day]}%
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      ))}
     </div>
-  );
+  )
 }
