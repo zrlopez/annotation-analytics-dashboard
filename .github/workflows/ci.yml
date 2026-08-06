@@ -15,16 +15,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check for source
+        id: src_check
+        run: |
+          if [ -f package.json ]; then
+            echo "found=true" >> $GITHUB_OUTPUT
+          else
+            echo "found=false" >> $GITHUB_OUTPUT
+            echo "::warning::No package.json found — skipping build steps until Next.js source is committed."
+          fi
+
       - name: Set up Node.js
+        if: steps.src_check.outputs.found == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        if: steps.src_check.outputs.found == 'true'
+        run: npm ci
 
       - name: Type-check
+        if: steps.src_check.outputs.found == 'true'
         run: npx tsc --noEmit
 
       - name: Build
+        if: steps.src_check.outputs.found == 'true'
         run: npx next build
