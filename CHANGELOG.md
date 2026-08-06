@@ -4,6 +4,17 @@ All notable changes to this project are documented here. This project follows [S
 
 ---
 
+## [1.4.0] — 2026-08-05
+
+### Repository
+
+- **Repo rename** — GitHub repository renamed from `performance-analytics-tool` to `annotation-analytics-dashboard` to match the rebuilt project name. GitHub automatically redirects all old URLs.
+- **CI workflow added** — New `.github/workflows/ci.yml` runs on every push and pull request to `main`: installs dependencies, runs TypeScript type-check (`tsc --noEmit`), and executes the Next.js build (`next build`). Ensures the app compiles cleanly before any merge.
+- **README CI badge** — Added live CI status badge linking to the new workflow.
+- **Copyright year corrected** — Updated from 2025 → 2026 in README footer.
+
+---
+
 ## [1.3.0] — 2026-05-22
 
 ### Improvements

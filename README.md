@@ -1,13 +1,14 @@
-# Annotation Analytics Dashboard (formerly Performance Analytics Tool)
+# Annotation Analytics Dashboard
 
 ![Status](https://img.shields.io/badge/status-portfolio--ready-brightgreen)
-![Stack](https://img.shields.io/badge/stack-Next.js%20%2B%20TypeScript%20%2B%20Recharts-0A66C2)
+![Stack](https://img.shields.io/badge/stack-Next.js%2014%20%2B%20TypeScript%20%2B%20Recharts-0A66C2)
+![CI](https://github.com/zrlopez/annotation-analytics-dashboard/actions/workflows/ci.yml/badge.svg)
 ![Docs](https://img.shields.io/badge/docs-Markdown-lightgrey)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 **Annotation Analytics Dashboard** is an interactive real-time dashboard for tracking ML data operations metrics — including annotation quality trends, pipeline throughput, team efficiency, and capacity utilization — with live state updates every 5 seconds.
 
-> **📝 Note:** This project was previously named **"Performance Analytics Tool"** and built with HTML/CSS/JavaScript. It has been fully rebuilt in **Next.js 14** with TypeScript and Recharts for improved real-time capabilities and accessibility.
+> **📝 Note:** This project was previously named **"Performance Analytics Tool"** and built with HTML/CSS/JavaScript. It has been fully rebuilt in **Next.js 14** with TypeScript and Recharts for improved real-time capabilities and accessibility. The original version is preserved in the [`legacy/`](./legacy/) directory.
 
 ## Features
 
@@ -26,7 +27,7 @@
 - **Styling:** Tailwind CSS
 - **Animation:** Framer Motion
 - **State Management:** React Hooks, custom `useLiveKpis` hook
-- **Previous Version:** HTML, CSS, JavaScript (Chart.js) — now rebuilt
+- **Previous Version:** HTML, CSS, JavaScript (Chart.js) — preserved in [`legacy/`](./legacy/)
 
 ## Key Metrics Tracked
 
@@ -102,7 +103,7 @@ Key implementation improvements:
 
 ## License
 
-MIT License © 2025 Zachary Ryan Lopez.   
+MIT License © 2026 Zachary Ryan Lopez.   
 See `LICENSE` for details.
 
 ---
