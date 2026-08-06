@@ -1,4 +1,4 @@
-# Security Policy — performance-analytics-tool
+# Security Policy — annotation-analytics-dashboard
 
 ## Supported Versions
 
@@ -19,7 +19,7 @@ Acknowledgment: **72 hours.** Status update: **7 days.**
 ## ⚠️ Data Privacy Note
 
 This dashboard must not contain real employee names, IDs, or performance metrics.
-All data rendered in `app.js` must be anonymized or synthetic.
+All data rendered in the app must be anonymized or synthetic.
 Real workforce analytics data must be served via an authenticated backend API—
 never embedded in client-side JavaScript.
 
@@ -35,7 +35,7 @@ In-scope:
 
 | Control | Status |
 |---------|--------|
-| Employee PII removal | ✅ Synthetic data only in `app.js` |
+| Employee PII removal | ✅ Synthetic data only |
 | Content Security Policy | 🚧 Planned |
 | Authenticated API backend | 🚧 Planned |
 | Dependency scanning | 🚧 Planned (npm audit) |
