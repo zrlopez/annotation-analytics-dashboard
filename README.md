@@ -7,7 +7,7 @@
 
 **Annotation Analytics Dashboard** is an interactive real-time dashboard for tracking ML data operations metrics — including annotation quality trends, pipeline throughput, team efficiency, and capacity utilization — with live state updates every 5 seconds.
 
-> **📝 Note:** This project was previously named **"Performance Analytics Tool"** and built with HTML/CSS/JavaScript. It has been fully rebuilt in **Next.js 14** with TypeScript and Recharts for improved real-time capabilities and accessibility.
+> **📝 Note:** This project was previously named **"Performance Analytics Tool"** and built with HTML/CSS/JavaScript. It has been fully rebuilt in **Next.js 16** with TypeScript and Recharts for improved real-time capabilities and accessibility.
 
 ## Features
 
@@ -21,10 +21,9 @@
 
 ## Tech Stack
 
-- **Framework:** Next.js 14, TypeScript
+- **Framework:** Next.js 16, React 19, TypeScript
 - **Visualization:** Recharts
 - **Styling:** Tailwind CSS
-- **Animation:** Framer Motion
 - **State Management:** React Hooks, custom `useLiveKpis` hook
 - **Previous Version:** HTML, CSS, JavaScript (Chart.js) — now rebuilt
 
@@ -62,7 +61,7 @@ Key implementation improvements:
 - **Error rate precision** — Preserved to 2 decimal places
 - **Inverted color logic** — Lower error rate = green (correct semantics)
 - **Alert threshold wiring** — Current values sync to live KPIs
-- **Chart.js pinned** — Version 4.4.4 with SRI integrity hash
+- **Modern Next.js baseline** — Next.js 16 with ESLint flat config and zero critical npm audit findings
 - **Null-guarded tab listeners** — Loop with `if(btn)` check prevents crashes
 - **Error boundary** — `loadOverviewTab` wrapped in `tryLoadTab`
 - **Theme flash prevention** — Inline script prevents light-mode flash on load
@@ -74,6 +73,17 @@ Key implementation improvements:
 2. Navigate to Projects → Annotation Analytics Dashboard.
 3. Explore live KPI updates every 5 seconds with dark/light theme toggle.
 4. Click through tabs: Overview, Throughput, Errors, Team, Capacity, Alerts.
+
+## Local Verification
+
+```bash
+npm install
+npm run lint
+npm run build
+npm audit --audit-level=critical
+```
+
+Expected result: lint and production build pass, static routes are generated, and npm reports `found 0 vulnerabilities` at the critical audit level.
 
 ## Screenshots
 
